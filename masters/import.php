@@ -154,15 +154,7 @@ include"../access.php";
 
       
 <br>
-<br>
-<footer>
-        <div class="container text-right">
-        <span class="h5">Powered By</span>
-        <img src="../img/logo.png" height="80" width="201">
-    </div>
-</footer>
-</body>
-</html>
+
 <?php
 if(isset($_POST["Import"])&&isset($_POST["clg_name"])){
        
@@ -188,8 +180,8 @@ if(isset($_POST["Import"])&&isset($_POST["clg_name"])){
                 $res=$conn->query($course_sql);
               $tot_num_rows=$res->num_rows;
                 if($tot_num_rows>0){
-             $sql = "INSERT into $clg_name (student_name, ph_no, course,yop, parents_no, email, address,feedback,clg_name,clg_id) 
-                       values ('".$getData[0]."','".$getData[1]."','".$getData[2]."','".$getData[3]."','".$getData[4]."','".$getData[5]."','".$getData[6]."','".$getData[7]."','$clg_name','$clg_id')";
+             $sql = "INSERT into $clg_name (student_name, ph_no, course,yop, parents_no, email, address,feedback,clg_name,clg_id,call_status1) 
+                       values ('".$getData[0]."','".$getData[1]."','".$getData[2]."','".$getData[3]."','".$getData[4]."','".$getData[5]."','".$getData[6]."','".$getData[7]."','$clg_name','$clg_id','Not Yet Call')";
                        $result = $conn->query($sql);
                        echo mysqli_error($conn);
               }
@@ -228,3 +220,12 @@ else{
 }
 
 ?>
+<br>
+<footer>
+        <div class="container text-right">
+        <span class="h5">Powered By</span>
+        <img src="../img/logo.png" height="80" width="201">
+    </div>
+</footer>
+</body>
+</html>

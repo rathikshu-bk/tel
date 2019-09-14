@@ -46,7 +46,7 @@ a{
         <div class="row">
         <div class="col-lg-6">
         <br><br>
-            <h2 class="h2">Master</h2>
+            <h2 class="h2">Report Master</h2>
             </div>
             <div class="col-lg-6">
             <img src="../img/logo2.png" height="100" width="130" class="pull-right">
@@ -59,7 +59,7 @@ a{
 <div class="container main_container">
 <ol class="breadcrumb">
   <li><a href="../index.php">Home</a></li>
-  <li class="active">Masters</li>
+  <li class="active">Reports</li>
 </ol>
 <!--<table class="table">
     <tr>

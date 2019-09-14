@@ -16,7 +16,19 @@ include"../access.php";
   <link rel="stylesheet" href="../bs/css/bootstrap.min.css">
 <script type="text/javascript" src="../bs/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="../bs/js/jquery.min.js"></script>
+<script type="text/javascript">
+$('document').ready(function() {
+    $('#output').hide();
+    $('form').submit(function(e) {
+        $('#output').show();
+        e.preventDefault();
+    });
+});
+</script>
 <style>
+#output{
+display:none;
+}
 .custom_header{
 	background-color:#FFFFFF;
 	color:#094ca1;
@@ -59,21 +71,21 @@ include"../access.php";
             ?>
             
             
-		<table class="table table hover">
+		<table class="table table hover" style="table-border:none;">
 		<form method="post" action="status_wise.php">
     <tr><td class="h3"><b>Status :</b></td><td><select name="status">
-  <option  value="interest">Interested</option>
-  <option  value="notinterest">Not Interested</option>
-  <option  value="waiting">Waiting</option>
-  <option  value="walkin">Walkin</option>
-  <option  value="register">Registered</option>
+  <option  value="Interested">Interested</option>
+  <option  value="NotInterest">Not Interested</option>
+  <option  value="Waiting">Waiting</option>
+  <option  value="Walkin">Walkin</option>
+  <option  value="Register">Registered</option>
 </select>
   
 </body></td></tr>
       
       
     <tr><td>                                  
-    <button type="submit" class="btn btn-primary" name="submit"><span class="glyphicon glyphicon-open"></span> Submit</button></td><td></td></tr>
+    <button type="submit" class="btn btn-primary" name="submit"><span class="glyphicon glyphicon-download-alt"></span> Retrieve</button></td><td></td></tr>
     </form>
       
     </table>
@@ -81,7 +93,7 @@ include"../access.php";
 </main>
 <section>
   <div class="container">
-    <table class="table">
+    <table class="table" id="output">
     <tr><th>Sl.No.</th><!-- <th>User Id</th> --><th>College Name</th><th>Student Name</th><th>Course Name</th><th>Year Of Passing</th><th>Phone</th></tr>
           <?php
           if(isset($_POST['submit'])){
@@ -98,21 +110,28 @@ include"../access.php";
             $status_query = "SELECT student_name,course,yop,ph_no,clg_name  FROM `$clg_name` WHERE current_status='$Status' ";
                 
                $result= $conn->query($status_query);
+               $tot_num_rows=$result->num_rows;
 //echo mysqli_error($conn);
               
   while($row = $result->fetch_assoc()){
                   
                   $student_name=$row['student_name'];
-                  $clg_name=$row['clg_name'];
+                  $clg_nm=$row['clg_name'];
                   $course=$row['course'];
                   $yop=$row['yop'];
                   $ph_no=$row['ph_no'];
+                  $clg1_name = strtoupper($clg_nm);
+                  $stu_nm=strtoupper($student_name);
+  $clg_name=str_replace('_', ' ', $clg1_name);
         
-          ?>
+       if($tot_num_rows>0)  { ?>
+
+
+
     <tr><td><?php echo $slno; ?></td><!-- <td><?php echo $user_id; ?> --></td>
 
         <td><?php echo $clg_name; ?></td>
-        <td><?php echo $student_name; ?></td>
+        <td><?php echo $stu_nm; ?></td>
         <td><?php echo $course; ?></td>
         <td><?php echo $yop; ?></td>
         <td><?php echo $ph_no; ?></td>
@@ -122,6 +141,7 @@ include"../access.php";
           <?php  $slno++; }
          }
         }
+      }
           ?>
 
     </table>

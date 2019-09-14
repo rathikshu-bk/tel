@@ -11,7 +11,7 @@ include"../access.php";
 //$clg_name=$_GET['clg_name'];
 //if(isset($_GET['clg_name'])){
 if(isset($_POST['submit'])){
-  echo "hi";
+  //echo "hi";
     $table_name = $_SESSION['walkin_progress'];
  //$current_status=$_POST['current_status'];
  //$ph_no=$_POST['ph_no'];
@@ -22,14 +22,14 @@ if(isset($_POST['submit'])){
  $hobby=$_POST['walkin'];
 
   foreach ($hobby as $hoby=>$value) {
-             echo "Hobby : ".$value."<br />";
+              "Hobby : ".$value."<br />";
         
  //echo $t1;
    //$check_ph=  implode(",", $value);
    //echo $check_ph;
 
         //$check_ph = $t1[$i];
-        $s = "UPDATE $table_name SET `current_status`='walkin' WHERE db_id='".$value."' ";
+        $s = "UPDATE $table_name SET `current_status`='Walkin' WHERE id='".$value."' ";
 
                 $res=$conn->query($s);
                 if($res){
@@ -139,21 +139,23 @@ if(isset($_GET['clg_name'])){
   if(isset($_SESSION['walkin_progress'])){
  $walkin=$_SESSION['walkin_progress'];
 
-$query1 = "SELECT db_id,student_name,clg_name,course,yop,ph_no FROM `$walkin`  order by 'db_id' asc ";
+$query1 = "SELECT id,student_name,clg_name,course,yop,ph_no,current_status FROM `$walkin`  order by 'id' asc ";
   $result= $conn->query($query1);
 //echo mysqli_error($conn);
    $slno=1;
  while($row = $result->fetch_assoc()){
-                  $db_id=$row['db_id'];
+                  $id=$row['id'];
                   $student_name=$row['student_name'];
                   $clg_name=$row['clg_name'];
                   $course=$row['course'];
                   $yop=$row['yop'];
                   $ph_no=$row['ph_no'];
+                  $current_status=$row['current_status'];
+
 //printf ("%s (%s)\n", $row["Name"], $row[""]);
     //$row=mysqli_fetch_array($result);
     //print_r($row);
-                  
+       
 
 
 ?>
@@ -163,7 +165,7 @@ $query1 = "SELECT db_id,student_name,clg_name,course,yop,ph_no FROM `$walkin`  o
 												 	    <td><?php echo $course; ?></td>
                                 <td><?php echo $yop; ?></td>
                                   <td ><?php echo $ph_no; ?></td>
-                                  <td><input type="checkbox" class="form-check-input" id="walkin[]" name="walkin[]" value="<?php echo $db_id; ?>" ></td>
+                                  <td><input type="checkbox"<?php echo ($row['current_status']=='Walkin' ? 'checked' : '');?> class="form-check-input" id="walkin[]" name="walkin[]" value="<?php echo $id; ?>" ></td>
 
 
 												 	</tr>

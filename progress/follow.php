@@ -66,60 +66,84 @@ include "../access.php";
 	</div>
 </main>
 <section>
+	<form action="follow_progress.php" method="post">
 	<div class="container">
 		<table class="table">
-		<tr><th>Sl.No.</th><!-- <th>User Id</th> --><th>College Name</th><th>Follow-Up Call</th></tr>
+		<tr><th>Sl.No.</th><!-- <th>User Id</th> --><th>College Name</th><th>Course</th><th>Follow-Up Call</th></tr>
 					<?php
 
-					$sql = "SELECT `college_name` FROM clg_master ";     
+					$sql = "SELECT * FROM clg_master ";  
+					$course_sql="SELECT * FROM course_master";
+					$res_course_sql=$conn->query($course_sql);
 
+ 
 											 $result = $conn->query($sql);
 											 $slno=1;
 											while($fetch = $result->fetch_assoc()){
 												 $clg_name=$fetch['college_name'];
+												 $clg_id=$fetch['id'];
 												// $college_name1 =($_POST['clg_name']);
 													$clg1_name = strtolower($clg_name);
 													$clg_name1=str_replace(' ', '_', $clg1_name);
-											$query_call_stauts = "SELECT `follow_date`FROM `$clg_name1` WHERE `follow_date` <= CURRENT_DATE()";
+											        $query_call_stauts = "SELECT `call_status1` FROM `$clg_name1` WHERE `call_status1`= 0";
 												 $result2 = $conn->query($query_call_stauts);
+												
+												 
+												 
+												 echo mysqli_error($conn);
 												 if (!$result2) {
-																    echo "Could not successfully run query ($sql) from DB: " . mysqli_error();
+																     echo "Could not successfully run query ($conn) from DB: " . mysqli_error();
 																    exit;
-}
-												 $follow_calls = $result2->num_rows;
-												 $href = "follow_progress.php?clg_name=".$clg_name;
-												 if($follow_calls>0){?>
+                                                  }
+												 $pending_calls = $result2->num_rows;
+												 //$href = "pending_progress.php?clg_name=".$clg_name;
+												 if($pending_calls>0){?>
 												 	 <tr>
 												 	 	<td><?php echo $slno; ?></td>
-												 	    </td><td><a href ="<?php echo $href; ?>"><?php echo $clg_name; ?></a></td>
-												 	    <td><?php echo $follow_calls; ?></td>
+												 	    </td><td><?php echo $clg_name; ?></td>
+												 	    <td><select class="selectpicker" name="course" id="course"   style=" height:28px; border: ridge;" onchange='this.form.submit()' >
+						                                     <option value="" disabled selected>Select Course</option>
+						                                     <?php
+						                                     $list = "SELECT * FROM `course_master`" ;
+						                                     $course_result=$conn->query($list);
+						                                     while ($row_ah = $course_result->fetch_assoc()) {
+						                                     ?>
+
+						                                    <option value="<?php echo $row_ah['id'].'-'.$clg_id ?>"><?php echo $row_ah['course']; ?></option>
+						                                    <?php } ?>
+						                                  </select>
+                              							</td>
+												 	    <td><?php echo $pending_calls; ?></td>
 
 												 	</tr>
 
 
-												  <?php  } ?>
+												  <?php $slno++;  } ?>
 												 
-					<?php $slno++;	}
+					<?php 	}
 				
 						?>
 
 		</table>
+	
 	</div>
+	</form>
 </section>
 <br>
-<br>
-<footer>
+<br><footer>
         <div class="container text-right">
         <span class="h5">Powered By</span>
         <img src="../img/logo.png" height="80" width="201">
     </div>
 </footer>
-</body>
-</html>
 <?php
-}
 
+}
 else{
     header("Location:../login.php");
 }
 ?>
+</body>
+</html>
+
+

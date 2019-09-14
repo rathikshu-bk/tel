@@ -1,7 +1,7 @@
 <?php 
 session_start();
 
-if(isset($_SESSION['user'])&&isset($_SESSION['user_priority'])&&($_SESSION['user_priority']=="2")){
+if(isset($_SESSION['user'])&&isset($_SESSION['user_priority'])&&($_SESSION['user_priority']=="1")){
 include"../access.php";
 if(isset($_GET['clg_name'])){
 	
@@ -32,17 +32,19 @@ if(isset($_POST['submit'])){
 	if($conn->query($sql)===TRUE){
 	?> <?php
         
-        $message = '<div class="text-center h3 alert-success">User Added Successfully</div>';
-        echo $clg_name;
-     $sql1="CREATE TABLE $clg_name (id int(500) AUTO_INCREMENT PRIMARY KEY,clg_id int(500),student_name varchar(50),clg_name varchar(50) , ph_no varchar(50) UNIQUE KEY, course varchar(50), yop varchar(50),parents_no varchar(50),address varchar(50),email varchar(50),feedback varchar(50),current_status varchar(50) DEFAULT 'NOTYET CALL',call_date1 TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,called_person1 varchar(50)  DEFAULT 'NOTYET CALL',call_status1 int(50),remark1 varchar(50),follow_date DATE,call_date2 DATE,called_person2 varchar(50),remark2 varchar(50),call_status2 int(50),call_date3 DATE,called_person3 varchar(50),remark3 varchar(50),call_status3 int(50),call_date4 DATE,called_person4 varchar(50),remark4 varchar(50),call_status4 int(50),call_date5 DATE,called_person5 varchar(50),call_status5 int(50),remark5 varchar(50),CONSTRAINT UC_Person UNIQUE (id,ph_no))
+       echo '<div class="text-center h3 alert-success">College Added Successfully</div>';
+       
+    $sql1="CREATE TABLE $clg_name (id int(225) AUTO_INCREMENT PRIMARY KEY,clg_id int(225),student_name varchar(50),clg_name varchar(50) , ph_no varchar(50) UNIQUE KEY, course varchar(50), yop varchar(50),parents_no varchar(50),address varchar(50),email varchar(50),feedback varchar(50),current_status varchar(50) DEFAULT 'NOTYET CALL',call_date1 TIMESTAMP DEFAULT CURRENT_TIMESTAMP,called_person1 varchar(50)  DEFAULT 'NOTYET CALL',call_status1 int(50),remark1 varchar(50),follow_date DATE,call_date2 DATE,called_person2 varchar(50),remark2 varchar(50),call_status2 int(50),call_date3 DATE,called_person3 varchar(50),remark3 varchar(50),call_status3 int(50),call_date4 DATE,called_person4 varchar(50),remark4 varchar(50),call_status4 int(50),call_date5 DATE,called_person5 varchar(50),call_status5 int(50),remark5 varchar(50),CONSTRAINT UC_Person UNIQUE (id,ph_no))
  ";
 
-if($conn->query($sql1)===TRUE){
-	 $message1 = '<div class="text-center h3 alert-success">college Table Added Successfully</div>';
-	}
-	else{
-		 $message = '<div class="text-center h3 alert-danger">College Already exists</div>';
-	}
+         if($conn->query($sql1)===TRUE)
+         {
+	                   $message1 = '<div class="text-center h3 alert-success">college Table Added Successfully</div>';
+	     }
+	     else
+	     {
+		 $message = '<div class="text-center h3 alert-danger">College Table doesnot created Successfully</div>';
+	     }
 
 } else {
             
@@ -111,7 +113,7 @@ if($conn->query($sql1)===TRUE){
             
             
 		<table class="table table hover">
-		<form method="post" action="clg.php","import.php">
+		<form method="post" action="clg.php">
 		
 			<tr><td class="h3">College Name</td><td><input type="text" name="clg_name"></td></tr>
 			

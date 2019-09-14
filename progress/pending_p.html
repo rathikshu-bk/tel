@@ -86,7 +86,14 @@ $college=$get_clg['clg_name'];
 //printf ("%s (%s)\n", $row["Name"], $row[""]);
     //$row=mysqli_fetch_array($result);
     //print_r($row);
- 
+  if($row==0){
+       unset($_SESSION['c_nm']);
+          
+            echo '<div class="text-center h7 alert-danger">No pending calls.</div>';
+             header("Location: pend.php");
+
+        }
+
 
 
 
@@ -224,7 +231,7 @@ a{
    
   </table>
   </form>
-<?php ?>
+
   </div>
  
 </main>

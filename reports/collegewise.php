@@ -29,32 +29,6 @@ include "../access.php";
 }
 $sum;
 
-
-if(!empty($_POST["clg_name"])){
-  $clg_name = stripcslashes($_POST['clg_name']);
-    if(!empty($_POST["course"]))
-    {
-        echo 'hi';
-        $course = stripcslashes($_POST['course']);
-        
-        echo $query = "SELECT current_status, count(*) as number FROM $clg_name WHERE `course` LIKE '%$course' AND call_status1='1' GROUP BY current_status ";  
-         $result = $conn-> query($query);  
-         $tot_cl = $result2->num_rows;
-         echo $tot_cl;
-         
-         echo '';
-        }
-    else
-    {
-     
-     $query = "SELECT current_status, count(*) as number FROM $clg_name WHERE call_status1='1'  GROUP BY current_status ";  
-    $result = $conn-> query($query);  
-         $tot_cl = $result2->num_rows;
-        
-         echo '';
-
-    }
-}
  ?>  
 <!doctype html>
 <html>
@@ -67,29 +41,7 @@ if(!empty($_POST["clg_name"])){
   <link rel="stylesheet" href="../bs/css/bootstrap.min.css">
 <script type="text/javascript" src="../bs/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="../bs/js/jquery.min.js"></script> <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>  
-           <script type="text/javascript">  
-           google.charts.load('current', {'packages':['corechart']});  
-           google.charts.setOnLoadCallback(drawChart);  
-           function drawChart()  
-           {  
-                var data = google.visualization.arrayToDataTable([  
-                          ['current_status', 'Number'],  
-                          <?php  
-                          while($row = mysqli_fetch_array($result))  
-                          {  
-                               echo "['".$row["current_status"]."', ".$row["number"]."],";  
-                          }  
-                          ?>  
-                     ]);  
-                var options = {  
-                      title: 'Percentage of College wise report',  
-                      is3D:true,  
-                      pieHole: 0.5  
-                     };  
-                var chart = new google.visualization.PieChart(document.getElementById('piechart'));  
-                chart.draw(data, options);  
-           }  
-           </script>  
+         
      
 <style>
 .custom_header{
@@ -167,16 +119,16 @@ a{
                         
                       <br>
                                
-                                <div class="col-lg-4">
+                                <div class="col-lg-6">
                                    <label class="col-lg-3 control-label" for="filebutton">College :</label>
                                     <select class="selectpicker" name="clg_name" id="clg_name"    style=" height:28px; border: ridge;" >
                                      <option value="" disabled selected>Select College name</option>
                                      <?php
-                                     $list = mysqli_query($conn,"SELECT `clg_name` FROM `clg_master` ");
+                                     $list = mysqli_query($conn,"SELECT `clg_name`,`college_name` FROM `clg_master` ");
                                      while ($row_ah = mysqli_fetch_assoc($list)) {
                                      ?>
 
-                                    <option value="<?php echo $row_ah['clg_name']; ?>"><?php echo $row_ah['clg_name']; ?></option>
+                                    <option value="<?php echo $row_ah['clg_name']; ?>"><?php echo $row_ah['college_name']; ?></option>
                                     <?php } ?>
                                   </select>
                                 </div>
@@ -193,9 +145,9 @@ a{
                                     <?php } ?>
                                   </select>
                                  </div>
-                                 <div class="col-lg-4">
-                                  <Button class="btn btn-success btn-md" id="btn" onchange="this.form.submit()">
-                                     <span class="glyphicon glyphicon-filter">Filter</span>
+                                 <div class="col-lg-2">
+                                  <Button class="btn btn-success btn-sm" id="btn" onchange="this.form.submit()">
+                                     <span class="glyphicon glyphicon-download-alt">Filter</span>
                                     </button>
                                  </div>
                             
@@ -203,27 +155,130 @@ a{
                         </div>
                         <br>
                         <br>
-                         <div class="container">  
-                         <div class="row"> 
-                                       <div class="col-lg-4">
-                                        </div>
-                                        <div class="col-lg-4"><b>Total Number Of Calls Met</b> <input type="text" style="border:none" value="<?php echo $sum; ?>"  placeholder="<?php echo $sum; ?>" ></div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                        </div>
-                     </div>
-                    </div>
-                <div class="container">  
-                <div class="row"> 
-                 <div class="col-lg-6">
+                <?php
+
+if(!empty($_POST["clg_name"])){
+  $clg_name1 = stripcslashes($_POST['clg_name']);
+  
+     $sql = "SELECT course FROM `course_master`"; 
+           $sum=0;
+            $query = $conn->query($sql);
+            $slno = 1;
+            $sum_int=0;
+            $sum_notint=0;
+            $sum_wait=0;
+            $sum_notyet=0;
+            $sum_walkin=0;
+            $sum_reg=0;
+            echo '<table class="table table-bordered table-striped"><tr ><th class="text-success">Course </th><th class="text-success">Total No of Calls </th><th class="text-success">Interested </th><th class="text-success">NotInterested </th><th class="text-success">Waiting </th><th class="text-success">Walkin</th><th class="text-success">Register </th><th class="text-success">Not Yet Call</th></tr>';
+            while($fetch = $query->fetch_assoc()){
+            
+            $course= $fetch['course'];
+            
+                        // $college_name1 =($_POST['clg_name']);
+                        $clg1_name = strtoupper($clg_name1);
+                        $clg_nm=str_replace('_', ' ', $clg1_name);
+                        //echo $clg_name1;
+                       $query_call_stauts = "SELECT call_status1 as `tot` FROM `$clg_name1` WHERE call_status1='1' ";
+                       $interest="SELECT current_status as interest FROM $clg_name1 WHERE current_status='Interested' AND `course`='$course' ";
+                       $notinterest="SELECT current_status as notinterest FROM $clg_name1 WHERE current_status='NotInterested' AND `course`='$course' ";
+                       $waiting="SELECT current_status as waiting FROM $clg_name1 WHERE current_status='Waiting' AND `course`='$course'";
+                       $notyetcall="SELECT current_status as notyetcall FROM $clg_name1 WHERE current_status='NOTYET CALL' AND `course`='$course'";
+                       $walkin="SELECT current_status as walkin FROM $clg_name1 WHERE current_status='Walkin' AND `course`='$course'";
+                       $register="SELECT current_status as register FROM $clg_name1 WHERE current_status='Register' AND `course`='$course' ";
+                        //$query_call_stauts1 = "SELECT current_status, count(*) as number FROM $clg_name1 WHERE call_date1 BETWEEN '".$_POST["from_date"]."' AND '".$_POST["to_date"]."' GROUP BY current_status ";
+                        $res1=$conn->query($interest);
+                        $res2=$conn->query($notinterest);
+                        $res3=$conn->query($waiting);
+                        $res4=$conn->query($notyetcall);
+                        $res5=$conn->query($walkin);
+                        $res6=$conn->query($register);
+
+                        $result2 = $conn->query($query_call_stauts);
+                         //$result5 = $conn->query($query_call_stauts);
+                        //$result3 = $conn->query($query_call_stauts1);
+                        //$row = $result3->fetch_assoc();
+                        
+                         
+                         //$sum+=$result2;
+                         $tot_int=$res1->num_rows;
+                         $tot_notint=$res2->num_rows;
+                         $tot_wait=$res3->num_rows;
+                         $tot_notyet=$res4->num_rows;
+                         $tot_walkin=$res5->num_rows;
+                         $tot_reg=$res6->num_rows;
+                         $tot_calls = $result2->num_rows;
+echo '<tr><td>'.$course.'</td><td>'.$tot_calls.'</td><td>'.$tot_int.'</td><td>'.$tot_notint.'</td><td>'.$tot_wait.'</td><td>'.$tot_walkin.'</td><td>'.$tot_reg.'</td><td>'.$tot_notyet.'</td></tr>';
+                       
+                       $sum_int+=$tot_int;
+                       $sum_notint+=$tot_notint;
+                       $sum_wait+=$tot_wait;
+                       $sum_notyet+=$tot_notyet;
+                       $sum_walkin+=$tot_walkin;
+                       $sum_reg+=$tot_reg;
+
+                         $sum+=$tot_calls;
+                         
+                        
+                         if($tot_calls<0){
+                           
+                              echo 'No calls';
+                                  }
+                       //$sum = $sum+$tot_calls; 
+ 
+
+                          }
+                          echo '</table>';
+    if(!empty($_POST["course"]))
+    {
+        //echo 'hi';
+        $course = stripcslashes($_POST['course']);
+        
+         $query_chart = "SELECT current_status, count(*) as number FROM $clg_name1 WHERE `course` LIKE '%$course' AND call_status1='1' GROUP BY current_status ";  
+         $result_chart = $conn-> query($query_chart);  
+         $tot_cl = $result2->num_rows;
+         //echo $tot_cl;
+         
+         echo '';
+        }
+    
+     
+    $query_chart = "SELECT current_status, count(*) as number FROM $clg_name1 WHERE call_status1='1'  GROUP BY current_status ";  
+    $result_chart = $conn-> query($query_chart) ; 
+    echo mysqli_error($conn);
+         $tot_cl = $result2->num_rows;
+        
+         echo '';
+
+    
+}
+                ?>
+          <script type="text/javascript">  
+           google.charts.load('current', {'packages':['corechart']});  
+           google.charts.setOnLoadCallback(drawChart);  
+           function drawChart()  
+           {  
+                var data = google.visualization.arrayToDataTable([  
+                          ['current_status', 'Number'],  
+                          <?php  
+                          while($row = $result_chart->fetch_assoc())
+                          {
+                               echo "['".$row["current_status"]."', ".$row["number"]."],";  
+                          }  
+                          ?>  
+                     ]);  
+                var options = {  
+                      title: 'Percentage of College wise report',  
+                      is3D:true,  
+                      pieHole: 0.5  
+                     };  
+                var chart = new google.visualization.PieChart(document.getElementById('piechart'));  
+                chart.draw(data, options);  
+           }  
+           </script>  
                 <div id="piechart" style="width: 900px; height: 500px;"></div>  
               
-               <div class="col-lg-6">
-                
-                  
-                 
-              </div>
-         </div>
+               
 </main>
 </form>
 <footer>

@@ -1,15 +1,10 @@
 <?php 
 session_start();
 if(isset($_SESSION['user'])&&isset($_SESSION['user_priority'])&&($_SESSION['user_priority']=="1")){
-  
-
-//$_SESSION['clg_name']='$clg_name';
-
 include"../access.php";
-//$clg_name=$_GET['clg_name'];
-//if(isset($_GET['clg_name'])){
+
 if(isset($_POST['submit'])){
-echo 'hey it will work ';
+
  
  $current_status=$_POST['current_status'];
  echo $current_status;
@@ -18,16 +13,16 @@ echo 'hey it will work ';
  $follow_date=$_POST['follow_date'];
  $comment=$_POST['comment'];
  $table_name = $_SESSION['follow_clg'];
- $sql_clg_id="SELECT clg_id,db_id FROM $table_name WHERE ph_no=$ph_no";
+ $sql_clg_id="SELECT clg_id,id FROM $table_name WHERE ph_no=$ph_no";
  $res_sql_clg_id=$conn->query($sql_clg_id);
  $row_clg_id=$res_sql_clg_id->fetch_assoc();
  $clg_id=$row_clg_id['clg_id'];
- $db_id=$row_clg_id['db_id'];
- echo $clg_id;
-echo  $sql_del="DELETE * FROM `follow_master` WHERE clg_id='$clg_id' AND follow_date='$follow_date' AND db_id='$db_id'";
+ $id=$row_clg_id['id'];
+ //echo $clg_id;
+ echo $sql_del="DELETE FROM `follow_master` WHERE clg_id='$clg_id' AND db_id='$id'";
  
  $res_sql_del=$conn->query($sql_del);
-
+echo mysqli_error($conn);
 
 $i=2;
 for($i=2; $i<6; $i++){
@@ -110,8 +105,9 @@ $college_name;
   $clg_nm = strtoupper($_SESSION['follow_clg']);
   $clg=str_replace('_',' ',$clg_nm);
 
-
- $query1 = "SELECT clg_id,student_name,clg_name,course,yop,ph_no FROM `".$_SESSION['follow_clg']."` WHERE `follow_date`<=CURRENT_DATE() order by 'db_id' asc limit 1";
+           echo  $query1 =   "SELECT j.clg_id,j.student_name,j.clg_name,j.course,j.yop,j.ph_no,CONCAT(COALESCE(`remark1`,''),'-',COALESCE(`called_person1`,''),'-',COALESCE(`remark2`,''),'-',COALESCE(`called_person2`,''),'-',COALESCE(`remark3`,''),'-',COALESCE(`called_person3`,''),'-',COALESCE(`remark4`,''),COALESCE(`remark5`,''),'-',COALESCE(`called_person5`,'')) AS feedback FROM `".$_SESSION['follow_clg']."` j INNER JOIN `follow_master` f         
+ON j.id=f.db_id WHERE j.follow_date<=CURRENT_DATE()   order by 'id' asc limit 1";
+//echo $query1 = "SELECT clg_id,student_name,clg_name,course,yop,ph_no FROM `".$_SESSION['follow_clg']."` WHERE `follow_date`<=CURRENT_DATE() AND `follow_master`.db_id= `".$_SESSION['follow_clg']."`.id order by 'db_id' asc limit 1";
   $result= $conn->query($query1);
 //echo mysqli_error($conn);
   $row = $result->fetch_assoc();
@@ -121,6 +117,11 @@ $college_name;
                   $course=$row['course'];
                   $yop=$row['yop'];
                   $ph_no=$row['ph_no'];
+                  $feedback=$row['feedback'];
+$tot_num_rows=$result->num_rows;
+ 
+
+               
 //printf ("%s (%s)\n", $row["Name"], $row[""]);
     //$row=mysqli_fetch_array($result);
     //print_r($row);
@@ -200,37 +201,35 @@ a{
 
 </main>
 <body style="overflow-x: hidden;">
-
-
+<?php if($tot_num_rows>0)
+                  {
+                   
+                   ?>
  <form action="follow_progress.php" method="post">
-  <table>
-          <tr><td> <label for="comment">College Name:</label></td>
-              <td><input type="text" name="clg_name" id="clg_name" value="<?php echo $clg ?> "></td>
+  <table style="border:1px solid white;margin-left:auto;margin-right:auto;">
+          
+          <tr colspan="4"><div class="text-center h4 "><b><?php echo $clg; ?></b></div>
           </tr>
 
-          <tr><td><label for="comment">Student Name:</label></td>
+          <tr>
              <td><input type="text" name="student_name" id="student_name" value="<?php echo $student_name ?> " ></td>
           </tr>
 
-          <tr><td> <label for="comment">Course:</label></td>
+          <tr>
               <td><input type="text" name="dept" id="dept" value="<?php echo $course ?> ">  </td>
        
           </tr>
-           <tr><td><label for="comment">Year of Passing:</label></td>
+           <tr>
               <td><input type="text" name="yop" id="yop" value="<?php echo $yop ?> ">  </td>
        
           </tr>
-           <tr><td><label >Contact No:</lable></td>
-              <td><input type="text" name="ph_no" id="ph_no" value="<?php echo $ph_no ?> ">  </td>
-       <td><a href="#" class="btn btn-success btn-md">
-              <span class="glyphicon glyphicon-earphone"></span>  Call 
-           </a>
-      </td>
-          </tr>
-          
-
+           <tr>
+              <td><input type="text" name="ph_no" id="ph_no" value="<?php echo $ph_no ?> "> 
+               </td>
+            </tr>
+            
 <tr>    
-  <td><label>Status</lable>
+ 
    <td><label class="radio-inline">
       <input type="radio" name="current_status" id="current_status" value="NotInterested">NotInterested </label>
  
@@ -240,39 +239,56 @@ a{
  <label class="radio-inline">
       <input type="radio" name="current_status" id="current_status" value="Waiting">Waiting </label></td>
 
-<!--     <td><label class="radio-inline">
-      <input type="radio" name="current_status" id="current_status" value="WalkIn">WalkIn </label>
-  </td>
-    <td><label class="radio-inline">
-      <input type="radio" name="current_status" id="current_status"  value="Register">Register </label>
-  </td> -->
+
 </tr>
-  <tr><td><label >Follow Date:</label></td>
-              <td><input class="form-control" type="text" name="follow_date" id="follow_date"  ></td>
-          </tr>
+  <tr>
+   <td><input class="form-control" type="text" name="follow_date" id="follow_date"  ></td>
+</tr>
+  <tr>
+    <td>
+   </td>
+  </tr>
   <tr> <td>
-      <label for="comment">Comment:</label>
-      <textarea class="form-control" rows="2" id="comment" name="comment"></textarea></td>
+     
+      <textarea class="form-control" rows="2" id="comment" name="comment" value="<?php echo $feedback ?>"></textarea></td>
    </tr>
    
-   <br><br>
-<tr></tr>
-     <tr><td>
-      
-        </td></tr>
    
-    </table>
-    <div align=center>
-      <button type="submit" class="btn btn-default btn-lg" id="submit" name="submit">
-          <span class="glyphicon glyphicon-pencil"></span> Update
+<tr >
+       <th colspan="2" style="text-align:center">
+        
+          <button type="submit" class="btn btn-success btn-md" id="submit" name="submit">
+          <span class="glyphicon glyphicon-earphone"></span> Call
+          </button>
+         
+      </th>
+   
+      <th colspan="2" style="text-align:center">
+       
+        <button type="submit" class="btn btn-primary btn-md" id="submit_update" name="submit_update">
+        <span class="glyphicon glyphicon-pencil"></span> Update
         </button>
-        </div> 
+        
+      </th>
+   
+      </tr>
+      <tr><th colspan="2" style="text-align:center"></th> </tr>
+     
+<tr><th colspan="4" style="text-align:center">
+ <input type="button" class="btn btn-info" value="Go To Homepage" onclick="location.href = 'pend.php';">
+      </th>
+</tr>
+   
+   
+  </table>
   </form>
-
+  
  
    </div>
   
- 
+ <?php }else{
+   echo '<div class="text-center h3 alert-danger">No more Calls</div>';
+ } ?>
 </main>
  
 

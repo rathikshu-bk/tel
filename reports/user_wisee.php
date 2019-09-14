@@ -159,18 +159,29 @@ a{
                
                   
                         
-                      <br>
+                      <br>       <div class="col-lg-3">
+                                     <select class="selectpicker" name="user_name" id="user_name"   style=" height:28px;  border: ridge;" onchange="this.form.submit()">
+                                     <option value="" disabled selected>Select User</option>
+                                     <?php
+                                     $list = mysqli_query($conn,"SELECT `user_name` FROM `user_master` ");
+                                     while ($row_ah = mysqli_fetch_assoc($list)) {
+                                     ?>
+
+                                    <option value="<?php echo $row_ah['user_name']; ?>"><?php echo $row_ah['user_name']; ?></option>
+                                    <?php } ?>
+                                  </select>
+                                 </div>
                                
-                                <div class="col-lg-3">
+                                <div class="col-lg-4">
                                   
                                     <select class="selectpicker" name="clg_name" id="clg_name"    style=" height:28px; border: ridge;" >
                                      <option value="" disabled selected>Select College name</option>
                                      <?php
-                                     $list = mysqli_query($conn,"SELECT `clg_name` FROM `clg_master` ");
+                                     $list = mysqli_query($conn,"SELECT `clg_name`,`college_name` FROM `clg_master` ");
                                      while ($row_ah = mysqli_fetch_assoc($list)) {
                                      ?>
 
-                                    <option value="<?php echo $row_ah['clg_name']; ?>"><?php echo $row_ah['clg_name']; ?></option>
+                                    <option value="<?php echo $row_ah['clg_name']; ?>"><?php echo $row_ah['college_name']; ?></option>
                                     <?php } ?>
                                   </select>
                                 </div>
@@ -187,22 +198,11 @@ a{
                                     <?php } ?>
                                   </select>
                                  </div>
-                                 <div class="col-lg-3">
-                                     <select class="selectpicker" name="user_name" id="user_name"   style=" height:28px;  border: ridge;" onchange="this.form.submit()">
-                                     <option value="" disabled selected>Select User</option>
-                                     <?php
-                                     $list = mysqli_query($conn,"SELECT `user_name` FROM `user_master` ");
-                                     while ($row_ah = mysqli_fetch_assoc($list)) {
-                                     ?>
+                                
 
-                                    <option value="<?php echo $row_ah['user_name']; ?>"><?php echo $row_ah['user_name']; ?></option>
-                                    <?php } ?>
-                                  </select>
-                                 </div>
-
-                                 <div class="col-lg-3">
-                                  <Button class="btn btn-success btn-md" id="btn" type="submit" name="submit" value="submit" >
-                                     <span class="glyphicon glyphicon-filter">Filter</span>
+                                 <div class="col-lg-2">
+                                  <Button class="btn btn-success btn-sm" id="btn" type="submit" name="submit" value="submit" >
+                                     <span class="glyphicon glyphicon-download-alt">Filter </span>
                                     </button>
                                  </div>
                             
